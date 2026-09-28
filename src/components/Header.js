@@ -3,11 +3,11 @@
 import { CART_ROUTE, HOME_ROUTE, LOGIN_ROUTE, navMenu } from "@/constants/routes";
 import Link from "next/link";
 import { usePathname, useRouter} from "next/navigation";
-import logo from "@/assets/images/logo.png";
 import Image from "next/image";
 import useAuthStore from "@/stores/authStore";
 import usePreferenceStore from "@/stores/preferenceStore";
 import useCartStore from "@/stores/cartStore";
+import Logo from "./Logo";
 
 const Header = () => {
 
@@ -34,13 +34,7 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Image
-              src={logo}
-              alt="FashionWear"
-              height={32}
-              width={32}
-              className="h-9"
-            />
+           <Logo/>
             <h1 className="text-2xl font-bold mt-1 text-transparent bg-linear-to-r from-primary to-secondary bg-clip-text">
               FashionWear
             </h1>

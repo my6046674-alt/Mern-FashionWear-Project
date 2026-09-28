@@ -9,8 +9,8 @@ import { toast } from "react-toastify";
 import { ORDER_PENDING } from "@/constants/orderStatus";
 import PayViaKhalti from "./_component/PayViaKhalti";
 import PayViaCash from "./_component/PayViaCash";
-import OrderStatus from "./_component/OrderStatus";
 import { useSearchParams } from "next/navigation";
+import OrderStatus from "@/components/orders/OrderStatus";
 
 const OrderPage = () => {
   const [orders, setOrders] = useState([]);
