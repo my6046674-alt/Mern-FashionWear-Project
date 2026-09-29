@@ -42,7 +42,9 @@ const DashboardPage = () => {
     setLoading(false);
   }
 
-  useEffect(() => fetchDashboardData, []);
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
   if (loading)
     return (

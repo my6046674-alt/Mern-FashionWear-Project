@@ -4,7 +4,7 @@ import { HOME_ROUTE, LOGIN_ROUTE } from "@/constants/routes";
 import useAuthStore from "@/stores/authStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Sidebar from "./_components/sidebar";
+import Sidebar from "./_components/Sidebar";
 
 const MerchantLayout = ({ children }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);

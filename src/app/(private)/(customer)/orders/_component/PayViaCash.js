@@ -1,42 +1,37 @@
 "use client";
 
-import { payViaKhalti } from "@/api/orders";
-import { useState } from "react";
+import { payViaCash } from "@/api/orders";
 import Spinner from "@/components/Spinner";
-import { FaMoneyBillWave } from "react-icons/fa";
-import { toast } from "react-toastify";
+import { ORDERS_ROUTE } from "@/constants/routes";
 import { useRouter } from "next/navigation";
-import { ORDER_ROUTE } from "@/constants/routes";
+import { useState } from "react";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
 
 const PayViaCash = ({ orderId }) => {
   const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   function initPayment() {
     setLoading(true);
 
-    PayViaCash(orderId)
-      .then((res) => { 
-        toast.success("Order confirmed")
-        router.push(`${ORDER_ROUTE}/confirmation/${orderId}?status=completed`);
+    payViaCash(orderId)
+      .then(() => {
+        router.push(`${ORDERS_ROUTE}/confirmation/${orderId}?status=Completed`);
       })
       .catch((error) => {
         console.log(error);
       })
-      .finally(() => setLoading(true));
+      .finally(() => setLoading(false));
   }
 
   return (
     <button
       onClick={initPayment}
-     className="bg-green-600 text-white px-4 py-2 rounded-md shadow flex gap-2 items-center"
-
+      className="bg-green-600 text-white px-4 py-2 rounded-md shadow flex gap-2 items-center"
     >
-    <span>Cash</span>
-      {/* <Spinner className="h-6! w-6!"/> */}
-       {loading ? <Spinner className="h-5! w-5!" /> : <FaMoneyBill1Wave />}
-
+      <span>Cash</span>
+      {loading ? <Spinner className="h-5! w-5!" /> : <FaMoneyBill1Wave />}
     </button>
   );
 };

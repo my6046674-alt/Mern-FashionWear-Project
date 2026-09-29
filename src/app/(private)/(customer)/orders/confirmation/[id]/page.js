@@ -1,3 +1,4 @@
+
 "use client";
 
 import { confirmOrder } from "@/api/orders";
@@ -11,11 +12,14 @@ const OrderConfirmationPage = () => {
   const searchParams = useSearchParams();
   const params = useParams();
   const router = useRouter();
-  const status = useSearchParams.arguments("status");
+
+  const status = searchParams.get("status");
 
   useEffect(() => {
-    if (status == "completed") {
-      toast.success("payment success.");
+    if (status == "Completed") {
+      toast.success("Payment success");
+      // payment success, redirect to orders page
+      // confirm payment
 
       confirmOrder(params.id, "success")
         .then(() => {
@@ -23,8 +27,7 @@ const OrderConfirmationPage = () => {
         })
         .catch((error) => console.log(error));
     } else {
-      console.log("order failed");
-      toast.success("payment failed.", {
+      toast.error("Payment failed", {
         onClose: () => {
           router.replace(ORDERS_ROUTE);
         },

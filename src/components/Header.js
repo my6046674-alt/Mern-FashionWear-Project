@@ -35,9 +35,6 @@ const Header = () => {
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
            <Logo/>
-            <h1 className="text-2xl font-bold mt-1 text-transparent bg-linear-to-r from-primary to-secondary bg-clip-text">
-              FashionWear
-            </h1>
           </div>
           <nav className="items-center gap-3 hidden md:flex">
             {navMenu.map((menu) => {

@@ -3,21 +3,41 @@ import axios from "axios";
 import api from "./api";
 import { formatParams } from "@/helpers/params";
 
-export const getProducts = async (searchParams) => {
-  const query = formatParams({
-    ...searchParams,
-    limit: searchParams?.limit || 100,
-  });
+export const getProducts = async (searchParams = {}) => {
+  try {
+    const query = formatParams({
+      ...searchParams,
+      limit: searchParams?.limit || 100,
+    });
 
-  const response = await axios.get(`${config.apiUrl}/api/products?${query}`);
+    const url = query
+      ? `${config.apiUrl}/api/products?${query}`
+      : `${config.apiUrl}/api/products`;
 
-  return response.data;
+    const response = await axios.get(url, { timeout: 15000 });
+
+    return Array.isArray(response.data)
+      ? response.data
+      : response.data?.products || response.data?.data || [];
+  } catch (error) {
+    console.error("Failed to fetch products:", error?.response?.data || error.message);
+    return [];
+  }
 };
 
 export const getProductById = async (id) => {
-  const response = await axios.get(`${config.apiUrl}/api/products/${id}`);
+  if (!id) return null;
 
-  return response.data;
+  try {
+    const response = await axios.get(`${config.apiUrl}/api/products/${id}`, {
+      timeout: 15000,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch product ${id}:`, error?.response?.data || error.message);
+    return null;
+  }
 };
 
 export const addProduct = async (data) => {

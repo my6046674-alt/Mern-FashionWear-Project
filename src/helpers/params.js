@@ -1,10 +1,12 @@
-export function formatParams(searchParams) {
+export function formatParams(searchParams = {}) {
+  if (!searchParams || typeof searchParams !== "object") return "";
+
   let query = "";
 
-  Object.entries(searchParams).map((param) => {
-    const [key, value] = param;
-
-    if (value) query += `${key}=${value}&`;
+  Object.entries(searchParams).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      query += `${key}=${value}&`;
+    }
   });
 
   return query.slice(0, query.length - 1);

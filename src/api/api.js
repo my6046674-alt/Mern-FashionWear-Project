@@ -1,22 +1,25 @@
-"use Client"
+"use client";
 
 import config from "@/config";
 import axios from "axios";
 
 const api = axios.create({
-    baseURL:config.apiUrl,
+  baseURL: config.apiUrl,
 });
 
-api.interceptors.request.use((config)=>{
-    const authToken=localStorage.getItem("authToken");
+api.interceptors.request.use(
+  (requestConfig) => {
+    if (typeof window !== "undefined") {
+      const authToken = localStorage.getItem("authToken");
 
-    if(authToken){
-        config.headers.Authorization=`Bearer ${authToken}`
+      if (authToken) {
+        requestConfig.headers.Authorization = `Bearer ${authToken}`;
+      }
     }
 
-    return config;
-},
-(error)=>Promise.reject(error),
-)
+    return requestConfig;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default api;
