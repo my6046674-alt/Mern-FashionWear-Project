@@ -9,11 +9,8 @@ import {
   ORDER_PENDING,
   ORDER_SHIPPED,
 } from "@/constants/orderStatus";
-import { HOME_ROUTE, PRODUCTS_ROUTE } from "@/constants/routes";
-import { ROLE_ADMIN } from "@/constants/userRoles";
-import useAuthStore from "@/stores/authStore";
 import { format } from "date-fns";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -22,10 +19,6 @@ const UpdateOrderPage = () => {
   const [status, setStatus] = useState(null);
 
   const params = useParams();
-
-  const user = useAuthStore((state) => state.user);
-
-  const router = useRouter();
 
   function updateStatus(event) {
     event.preventDefault();
@@ -36,8 +29,6 @@ const UpdateOrderPage = () => {
   }
 
   useEffect(() => {
-    if (!user.roles.includes(ROLE_ADMIN)) return router.replace(HOME_ROUTE);
-
     const orderId = params.id;
 
     getOrdersById(orderId)
@@ -46,7 +37,7 @@ const UpdateOrderPage = () => {
         setStatus(res.data.status);
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [params.id]);
 
   if (!order) return;
 

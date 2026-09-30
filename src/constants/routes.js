@@ -1,5 +1,4 @@
 import { FaChartPie, FaShoppingBag, FaShoppingCart, FaUsers } from "react-icons/fa";
-import { ROLE_ADMIN } from "./userRoles";
 
 export const HOME_ROUTE = "/";
 export const ABOUT_ROUTE = "/about";
@@ -49,6 +48,11 @@ export const adminMenu = [
     Icon: FaChartPie,
   },
   {
+    label: "Cart",
+    route: CART_ROUTE,
+    Icon: FaShoppingCart,
+  },
+  {
     label: "Product Management",
     route: PRODUCT_MANAGEMENT_ROUTE,
     Icon: FaShoppingBag,
@@ -62,6 +66,5 @@ export const adminMenu = [
     label: "User Management",
     route: USER_MANAGEMENT_ROUTE,
     Icon: FaUsers,
-    allowedRole: ROLE_ADMIN,
   },
 ];

@@ -1,11 +1,12 @@
 "use client";
 
-import { PRODUCTS_ROUTE } from "@/constants/routes";
+import { DASHBOARD_ROUTE, PRODUCTS_ROUTE } from "@/constants/routes";
 import useCartStore from "@/stores/cartStore";
 import Image from "next/image";
 import Link from "next/link";
 import {
   FaArrowRight,
+  FaArrowLeft,
   FaImage,
   FaMinus,
   FaPlus,
@@ -27,9 +28,18 @@ const CartPage = () => {
   return (
     <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
       <div className="mx-auto container px-4 2xl:px-0">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
-          Shopping Cart
-        </h2>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
+            Shopping Cart
+          </h2>
+          <Link
+            href={DASHBOARD_ROUTE}
+            className="inline-flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+          >
+            <FaArrowLeft aria-hidden="true" />
+            Back to Dashboard
+          </Link>
+        </div>
 
         {products.length == 0 ? (
           <div>Cart is empty.</div>

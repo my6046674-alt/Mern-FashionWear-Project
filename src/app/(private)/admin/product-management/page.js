@@ -16,14 +16,16 @@ const ProductManagementPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { user } = useAuthStore.getState();
+  const user = useAuthStore((state) => state.user);
 
   const searchParams = useSearchParams();
 
   const sort = searchParams.get("sort");
   const currentPage = searchParams.get("page") ?? 1;
 
-  function fetchProducts() {
+  useEffect(() => {
+    if (!user?._id) return;
+
     const filter = {
       createdBy: user._id,
       limit: PAGE_LIMIT,
@@ -37,11 +39,7 @@ const ProductManagementPage = () => {
       })
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
-  }
-
-  useEffect(() => {
-    fetchProducts();
-  }, [sort, currentPage]);
+  }, [user?._id, sort, currentPage]);
 
   return (
     <section className="py-3">

@@ -8,24 +8,59 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import EditUser from "./EditUser";
 
+async function requestUsers() {
+  const response = await getAllUsers();
+
+  return Array.isArray(response.data)
+    ? response.data
+    : Array.isArray(response.data?.users)
+      ? response.data.users
+      : [];
+}
+
+function getUserLoadErrorMessage(error) {
+  return error?.response?.status === 403
+    ? "Administrator access is required to view user records."
+    : "Unable to load users. Please try again.";
+}
+
 const UsersTable = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  async function fetchUsers() {
-    try {
-      const response = await getAllUsers();
-
-      setUsers(response.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+  function retryFetchUsers() {
+    setLoading(true);
+    setErrorMessage("");
+    requestUsers()
+      .then(setUsers)
+      .catch((error) => {
+        setUsers([]);
+        setErrorMessage(getUserLoadErrorMessage(error));
+      })
+      .finally(() => setLoading(false));
   }
 
   useEffect(() => {
-    fetchUsers();
+    let isMounted = true;
+
+    requestUsers()
+      .then((users) => {
+        if (isMounted) setUsers(users);
+      })
+      .catch((error) => {
+        if (isMounted) {
+          setUsers([]);
+          setErrorMessage(getUserLoadErrorMessage(error));
+        }
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (loading)
@@ -67,7 +102,20 @@ const UsersTable = () => {
           </tr>
         </thead>
         <tbody>
-          {users?.length == 0 ? (
+          {errorMessage ? (
+            <tr>
+              <td colSpan={8} className="py-4 text-center">
+                <p>{errorMessage}</p>
+                <button
+                  type="button"
+                  onClick={retryFetchUsers}
+                  className="mt-2 text-primary hover:underline"
+                >
+                  Try again
+                </button>
+              </td>
+            </tr>
+          ) : users.length === 0 ? (
             <tr>
               <td colSpan={7} className="text-center py-4">
                 No users.

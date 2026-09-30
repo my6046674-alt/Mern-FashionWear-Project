@@ -1,10 +1,16 @@
 "use client";
 
-import { getAllOrders } from "@/api/orders";
+import {
+  getAllOrders,
+  getOrdersByMerchant,
+  getOrdersByUser,
+} from "@/api/orders";
 import { getProducts } from "@/api/products";
 import { getAllUsers } from "@/api/users";
 import Spinner from "@/components/Spinner";
 import { ORDER_CONFIRMED, ORDER_PENDING } from "@/constants/orderStatus";
+import { ROLE_ADMIN, ROLE_MERCHANT } from "@/constants/userRoles";
+import useAuthStore from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import { FaCheckCircle, FaShoppingCart, FaUsers } from "react-icons/fa";
 import { FaClock } from "react-icons/fa6";
@@ -30,21 +36,67 @@ const DashboardPage = () => {
   const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
-
-  async function fetchDashboardData() {
-    try {
-      await getAllOrders().then((response) => setOrders(response.data));
-      await getAllUsers().then((response) => setUsers(response.data));
-      await getProducts().then((data) => setProducts(data));
-    } catch (error) {
-      console.log(error);
-    }
-    setLoading(false);
-  }
+  const user = useAuthStore((state) => state.user);
+  const roles = Array.isArray(user?.roles)
+    ? user.roles
+    : user?.role
+      ? [user.role]
+      : [];
+  const normalizedRoles = roles.map((role) =>
+    String(role).replace(/^ROLE_/, "").toUpperCase(),
+  );
+  const isAdmin = normalizedRoles.includes(ROLE_ADMIN);
+  const isMerchant = normalizedRoles.includes(ROLE_MERCHANT);
 
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    let cancelled = false;
+    const ordersRequest = isAdmin
+      ? getAllOrders()
+      : isMerchant
+        ? getOrdersByMerchant()
+        : getOrdersByUser();
+    const usersRequest = isAdmin
+      ? getAllUsers()
+      : Promise.resolve({ data: [] });
+
+    Promise.allSettled([ordersRequest, getProducts(), usersRequest]).then(
+      ([ordersResult, productsResult, usersResult]) => {
+        if (cancelled) return;
+
+        if (ordersResult.status === "fulfilled") {
+          const data = ordersResult.value.data;
+          setOrders(
+            Array.isArray(data)
+              ? data
+              : Array.isArray(data?.orders)
+                ? data.orders
+                : [],
+          );
+        }
+
+        if (productsResult.status === "fulfilled") {
+          setProducts(productsResult.value);
+        }
+
+        if (usersResult.status === "fulfilled") {
+          const data = usersResult.value.data;
+          setUsers(
+            Array.isArray(data)
+              ? data
+              : Array.isArray(data?.users)
+                ? data.users
+                : [],
+          );
+        }
+
+        setLoading(false);
+      },
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAdmin, isMerchant]);
 
   if (loading)
     return (
@@ -79,14 +131,16 @@ const DashboardPage = () => {
         border="border-blue-600"
         background="bg-blue-100"
       />
-      <Card
-        Icon={FaUsers}
-        value={users.length}
-        label="Total Users"
-        color="text-red-500"
-        border="border-red-600"
-        background="bg-red-100"
-      />
+      {isAdmin && (
+        <Card
+          Icon={FaUsers}
+          value={users.length}
+          label="Total Users"
+          color="text-red-500"
+          border="border-red-600"
+          background="bg-red-100"
+        />
+      )}
     </div>
   );
 };
