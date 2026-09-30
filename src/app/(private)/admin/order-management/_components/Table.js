@@ -18,25 +18,58 @@ import { ROLE_ADMIN, ROLE_MERCHANT } from "@/constants/userRoles";
 import EditOrder from "./EditOrder";
 
 async function addProductImages(orderList) {
-  const products = await getProducts({ limit: 100 });
-  const imageUrlsByProduct = new Map(
-    products.map((product) => [
-      product._id,
-      Array.isArray(product.imageUrls) ? product.imageUrls : [],
-    ]),
-  );
-
-  return orderList.map((order) => ({
+  const normalizedOrders = orderList.map((order) => ({
     ...order,
     orderItems: Array.isArray(order.orderItems)
-      ? order.orderItems.map((item) => ({
-          ...item,
-          imageUrls:
-            Array.isArray(item.imageUrls) && item.imageUrls.length > 0
-              ? item.imageUrls
-              : imageUrlsByProduct.get(item._id) ?? [],
-        }))
+      ? order.orderItems.map((item) => {
+          const product =
+            item.product && typeof item.product === "object"
+              ? item.product
+              : {};
+
+          return {
+            ...product,
+            ...item,
+            _id: item._id ?? product._id,
+            productId: product._id ?? item.productId ?? item._id,
+            name: item.name ?? product.name,
+            brand: item.brand ?? product.brand,
+            category: item.category ?? product.category,
+            imageUrls:
+              Array.isArray(item.imageUrls) && item.imageUrls.length > 0
+                ? item.imageUrls
+                : Array.isArray(product.imageUrls)
+                  ? product.imageUrls
+                  : [],
+          };
+        })
       : [],
+  }));
+
+  const missingImageProductIds = [
+    ...new Set(
+      normalizedOrders.flatMap((order) =>
+        order.orderItems
+          .filter((item) => item.imageUrls.length === 0)
+          .map((item) => item.productId)
+          .filter(Boolean),
+      ),
+    ),
+  ];
+
+  if (missingImageProductIds.length === 0) return normalizedOrders;
+
+  const products = await getProducts({ limit: 100 });
+  const imageUrlsByProduct = new Map(
+    products.map((product) => [product._id, product.imageUrls ?? []]),
+  );
+
+  return normalizedOrders.map((order) => ({
+    ...order,
+    orderItems: order.orderItems.map((item) => ({
+      ...item,
+      imageUrls: imageUrlsByProduct.get(item.productId) ?? [],
+    })),
   }));
 }
 
