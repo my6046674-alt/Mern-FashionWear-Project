@@ -46,4 +46,4 @@ const Benefits = () => {
   );
 };
 
-export default Benefits;
+export default Benefits; 

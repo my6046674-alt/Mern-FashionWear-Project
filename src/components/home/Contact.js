@@ -3,7 +3,7 @@ const Contact = () => {
     <section id="contact" className="py-12">
       <div className="container mx-auto px-4">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3560.662121468006!2d87.28372377643548!3d26.818885076703182!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ef4175e4f26a95%3A0x9b8526c7c4c7bc1c!2sCode%20IT!5e0!3m2!1sen!2snp!4v1775141776638!5m2!1sen!2snp"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3560.662121468006!2d86.0886!3d26.7288!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ec6c8b7c8b8c8b%3A0x0!2sJanaki%20Mandir!5e0!3m2!1sen!2snp!4v1775141776638!5m2!1sen!2snp"
           height={200}
           style={{ border: 0, width: "100%", borderRadius: "2rem" }}
           allowFullScreen
@@ -56,29 +56,29 @@ const Contact = () => {
               Have any questions? Please reach out to us.
             </p>
             <a
-              href="https://maps.app.goo.gl/PUFbCf7w5cHEX2AF6"
+              href="https://www.google.com/maps/search/?api=1&query=Janakpur+Dhanusha+Nepal"
               target="_blank"
               className="m-1 text-sm block text-dark dark:text-white hover:text-primary"
             >
-              📍 Prithvi Path, Dharan, Sunsari
+              📍 Janakpur Dhama
             </a>
             <a
-              href="mailto:info@codeit.com.np"
+              href="mailto:my6046674@gmail.com"
               className="m-1 text-sm block text-dark dark:text-white hover:text-primary"
             >
-              📨 info@codeit.com.np
+              📨 my6046674@gmail.com
             </a>
             <a
-              href="tel:+977-25-575163"
+              href="tel:+9819693589"
               className="m-1 text-sm block text-dark dark:text-white hover:text-primary"
             >
-              📞 +977-25-575163
+              📞 +9819693589
             </a>
             <a
-              href="https://wa.me/9862130505"
+              href="https://wa.me/9819693589"
               className="m-1 text-sm block text-dark dark:text-white hover:text-primary"
             >
-              💬 9862130505
+              💬 9819693589
             </a>
           </div>
         </div>
